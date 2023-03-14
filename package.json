@@ -1,0 +1,24 @@
+{
+  "name": "kook_ts",
+  "version": "1.0.0",
+  "description": "基于KBotify的Kook机器人框架",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "del dist /s /q && tsc --declaration"
+  },
+  "keywords": [],
+  "author": "IAFEnvoy",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "cnpm": "^9.0.1",
+    "fs": "^0.0.1-security",
+    "kbotify": "^0.2.10",
+    "typescript": "^4.9.5"
+  },
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "request": "^2.88.2"
+  }
+}
