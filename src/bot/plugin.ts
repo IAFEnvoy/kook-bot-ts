@@ -1,46 +1,55 @@
 import { readdirSync } from "fs";
 import { TextMessage } from "kbotify";
+import { resolve } from "path";
 
 import { KookBot } from "..";
+import { error, log } from "../utils/logger";
 import { PermissionManager } from "./permission";
 
-export class PluginLoader {
+export class PluginManager {
     plugins: Array<BotPlugin>; folder: string; permissionManager: PermissionManager
-    constructor(plugin_folder: string = './src/plugins', permission_path: string = './permission.json') {
+    constructor(plugin_folder: string, permission_path: string = './permission.json') {
         this.plugins = [];
-        this.folder = plugin_folder;
+        this.folder = resolve(plugin_folder);
         this.permissionManager = new PermissionManager(permission_path);
     }
-    load = (client: KookBot, config: {}) => {
+    load = (client: KookBot): void => {
         let files = readdirSync(this.folder, 'utf-8');
         let cjsModule = files.reduce((p: Array<string>, c: string): Array<string> => {
             if (c.endsWith('.js'))
                 p.push(c);
             return p;
         }, []);
-        console.log('检测到插件：');
+        log('检测到插件：');
         console.log(cjsModule);
         cjsModule.forEach((name: string): void => {
             try {
-                const plugin = require('./plugins/' + name);
+                const plugin = require(this.folder + '\\' + name);
                 if (plugin.onLoad != null)
-                    plugin.onLoad(config, client);
-                this.plugins.push(new BotPlugin(plugin.config, name, plugin.onMessage, plugin.onRemove));
+                    plugin.onLoad(client);
+                this.plugins.push({
+                    id: plugin.config.id,
+                    name: plugin.config.name,
+                    filename: name,
+                    onMessage: plugin.onMessage,
+                    onRemove: plugin.onRemove,
+                    menu: plugin.config.menu
+                });
             } catch (err) {
-                console.log('加载插件文件' + name + '时出错');
+                error('加载插件文件' + name + '时出错');
                 console.log(err);
             }
         })
-        console.log('已成功加载插件：');
+        log('已成功加载插件：');
         console.log(this.getPlugins());
-        console.log('插件配置信息：');
+        log('插件配置信息：');
         this.plugins.forEach((p: BotPlugin): void => console.log(`插件id：${p.id}，插件名称：${p.name}，插件菜单项：${p.menu == null ? '无' : p.menu}`));
         this.permissionManager.load();
-        console.log('已成功加载权限文件');
+        log('已成功加载权限文件');
     }
     clear = (): void => {
         for (let i = 0; i < this.plugins.length; i++)
-            delete require.cache[require.resolve('./plugins/' + this.plugins[i].filename)];
+            delete require.cache[require.resolve(this.folder + this.plugins[i].filename)];
         this.plugins = [];
     }
     onMessage = (client: KookBot, event: TextMessage): void => {
@@ -63,11 +72,11 @@ export class PluginLoader {
         return p;
     }, []);
     getMenu = (channel_id: string): string => this.plugins.reduce((p: string, c: BotPlugin): string => (!this.permissionManager.hasPermission(c.id, channel_id) || c.menu == undefined) ? p : `${p}\n${c.menu}`, '菜单：');
-    runManagerEvent(client: KookBot, msg: TextMessage, config: {}) {
+    runManagerEvent = (client: KookBot, msg: TextMessage): void => {
         let message = msg.content;
         if (message == '/plugin reload') {
             this.clear();
-            this.load(client, config);
+            this.load(client);
             client.sendText(msg.channelId, '已成功重载插件');
             client.sendText(msg.channelId, '已安装插件：' + this.getPlugins());
         }
@@ -76,7 +85,7 @@ export class PluginLoader {
         if (message == '/plugin name')
             client.sendText(msg.channelId, '插件列表：' + this.getPlugins());
         if (message == '/plugin enabled')
-            client.sendText(msg.channelId, '已启用插件：' + this.plugins.reduce((p, c) => {
+            client.sendText(msg.channelId, '已启用插件：' + this.plugins.reduce((p: Array<string>, c: BotPlugin): Array<string> => {
                 if (this.permissionManager.hasPermission(c.id, msg.channelId))
                     p.push(c.name);
                 return p;
@@ -105,16 +114,29 @@ export class PluginLoader {
             }
         }
     }
+    runConsoleMessage = (cmd: string, client: KookBot): void => {
+        if (cmd == '/plugin reload') {
+            this.clear();
+            this.load(client);
+            log('已成功重载插件');
+            log(`已安装插件：${this.getPlugins()}`);
+        }
+        if (cmd == '/plugin id')
+            log(`插件ID列表：${this.getPluginsId()}`);
+        if (cmd == '/plugin name')
+            log(`插件列表：${this.getPlugins()}`);
+        if (cmd == '/permission reload') {
+            this.permissionManager.load();
+            log('已成功重载权限文件');
+        }
+    }
 }
 
-class BotPlugin {
-    id: string; name: string; filename: string; onMessage: Function; onRemove: Function; menu: string;
-    constructor(config: { id: string, name: string, menu: string }, filename: string, onMessage: Function, onRemove: Function) {
-        this.id = config.id;
-        this.name = config.name;
-        this.filename = filename;
-        this.onMessage = onMessage;
-        this.onRemove = onRemove;
-        this.menu = config.menu;
-    }
+interface BotPlugin {
+    id: string;
+    name: string;
+    filename: string;
+    onMessage?: Function;
+    onRemove?: Function;
+    menu?: string;
 }

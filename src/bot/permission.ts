@@ -1,7 +1,7 @@
 import fs from 'fs';
 
 export class PermissionManager {
-    FILE_PATH: string; config: {};
+    FILE_PATH: string; config: Record<string, any>;
     constructor(permission_path: string) {
         this.FILE_PATH = permission_path;
         this.config = {};

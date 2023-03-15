@@ -5,20 +5,26 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "del dist /s /q && tsc --declaration"
+    "test": "npm run build && node test",
+    "build": "echo 开始清理旧文件 && del dist /s /q && echo 开始编译 && tsc --declaration && echo 编译完成"
   },
-  "keywords": [],
+  "keywords": [
+    "bot",
+    "kook",
+    "kaiheila",
+    "framework",
+    "kbotify"
+  ],
   "author": "IAFEnvoy",
   "license": "GPL-3.0",
   "dependencies": {
-    "cnpm": "^9.0.1",
     "fs": "^0.0.1-security",
     "kbotify": "^0.2.10",
-    "typescript": "^4.9.5"
+    "readline": "^1.3.0",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",
-    "request": "^2.88.2"
+    "@types/request": "^2.48.8"
   }
 }
