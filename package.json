@@ -1,7 +1,7 @@
 {
   "name": "kook-bot-ts",
   "version": "1.0.0",
-  "description": "基于KBotify的Kook机器人框架",
+  "description": "基于KBotify的Kook插件式机器人框架",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
