@@ -49,7 +49,7 @@ export class PluginManager {
     }
     clear = (): void => {
         for (let i = 0; i < this.plugins.length; i++)
-            delete require.cache[require.resolve(this.folder + this.plugins[i].filename)];
+            delete require.cache[require.resolve(this.folder + '\\' + this.plugins[i].filename)];
         this.plugins = [];
     }
     onMessage = (client: KookBot, event: TextMessage): void => {
@@ -129,6 +129,11 @@ export class PluginManager {
             this.permissionManager.load();
             log('已成功重载权限文件');
         }
+    }
+    runCommonCommand = (client: KookBot, msg: TextMessage): void => {
+        let message = msg.content;
+        if (message == '/me') client.sendText(msg.channelId, `你的用户id是${msg.authorId}`);
+        if (message == '/here') client.sendText(msg.channelId, `这个频道的id是${msg.channelId}`);
     }
 }
 

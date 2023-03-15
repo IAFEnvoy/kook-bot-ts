@@ -32,6 +32,8 @@ export class KookBot {
                 this.plugin_manager.runManagerEvent(this, msg);
             if ((config.menu_key ?? ['菜单', '/help']).indexOf(msg.content) != -1)
                 this.sendText(msg.channelId, this.plugin_manager.getMenu(msg.channelId));
+            this.plugin_manager.runCommonCommand(this, msg);
+            this.plugin_manager.onMessage(this, msg);
         });
         if (config.enable_console == true)
             readline.createInterface({
