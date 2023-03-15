@@ -1,5 +1,5 @@
 {
-  "name": "kook_ts",
+  "name": "kook-bot-ts",
   "version": "1.0.0",
   "description": "基于KBotify的Kook机器人框架",
   "main": "dist/index.js",
