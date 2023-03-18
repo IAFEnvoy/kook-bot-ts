@@ -8,7 +8,7 @@ import { PermissionManager } from "./permission";
 
 export class PluginManager {
     plugins: Array<BotPlugin>; folder: string; permissionManager: PermissionManager
-    constructor(plugin_folder: string, permission_path: string = './permission.json') {
+    constructor(plugin_folder: string, permission_path: string) {
         this.plugins = [];
         this.folder = resolve(plugin_folder);
         this.permissionManager = new PermissionManager(permission_path);
@@ -130,7 +130,7 @@ export class PluginManager {
             log('已成功重载权限文件');
         }
     }
-    runCommonCommand = (client: KookBot, msg: TextMessage): void => {
+    runDebugCommand = (client: KookBot, msg: TextMessage): void => {
         let message = msg.content;
         if (message == '/me') client.sendText(msg.channelId, `你的用户id是${msg.authorId}`);
         if (message == '/here') client.sendText(msg.channelId, `这个频道的id是${msg.channelId}`);

@@ -1,7 +1,11 @@
 {
   "name": "kook-bot-ts",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "基于KBotify的Kook插件式机器人框架",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:IAFEnvoy/kook-bot-ts.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -20,11 +24,13 @@
   "dependencies": {
     "fs": "^0.0.1-security",
     "kbotify": "^0.2.10",
+    "os-utils": "^0.0.14",
     "readline": "^1.3.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
     "@types/node": "^18.15.3",
+    "@types/os-utils": "^0.0.1",
     "@types/request": "^2.48.8"
   }
 }

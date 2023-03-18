@@ -14,7 +14,8 @@ const KookBot = require('kook-ts').KookBot;
 const bot = new KookBot({
     token: '在这里放置你的token',
     plugin_folder: './plugins/',//插件放置位置，可更改
-    ops: []//op列表，不知道的可以先启动机器人然后在kook里面/me
+    ops: [],//op列表，不知道的可以先启动机器人然后在kook里面/me
+    debug_command:true,//是否启用调试指令如/me，/here
 })
 ```
 #### 插件代码
