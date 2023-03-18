@@ -37,3 +37,14 @@ const config = {
 
 module.exports = { config, onMessage, onLoad };//除了config都是可选
 ```
+
+### 管理员指令
+#### 通用
+`/plugin reload` 重载所有插件（在修改插件后）
+`/enable <id>` 在当前频道启用插件
+`/disable <id>` 在当前频道禁用插件
+`/permission reload` 重载权限文件（在手动修改权限文件后）
+
+#### 开票
+`/ticket enable <type1> <type2> ...` 启用开票系统，注意需要在单独的一个分组里面使用，bot会自动创建入口
+`/ticket disable` 禁用开票系统
